@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Auth } from 'aws-amplify';
 import './Login.css';
 
 export default class Login extends Component {
@@ -22,15 +23,22 @@ export default class Login extends Component {
     });
   };
 
-  handleSubmit = event => {
-    event.preventeDefault();
+  handleSubmit = async event => {
+    event.preventDefault();
+
+    try {
+      await Auth.signIn(this.state.email, this.state.password);
+      alert('Logged in');
+    } catch (e) {
+      alert(e.message);
+    }
   };
 
   render() {
     return (
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email" bgSize="large">
+          <FormGroup controlId="email" bsSize="large">
             <ControlLabel>Email</ControlLabel>
             <FormControl
               autoFocus
@@ -39,7 +47,7 @@ export default class Login extends Component {
               onChange={this.handleChange}
             />
           </FormGroup>
-          <FormGroup controlId="password" bgSize="large">
+          <FormGroup controlId="password" bsSize="large">
             <ControlLabel>Password</ControlLabel>
             <FormControl
               autoFocus
